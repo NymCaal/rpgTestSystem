@@ -1,8 +1,8 @@
 package com.actors;
 
 public class Actor {
-    int maxHp;
-    int currentHp;
+    ResourceBar hpBar;
+    ResourceBar spBar;
 
     String name;
 
@@ -17,8 +17,8 @@ public class Actor {
         this.name = name;
         downed = false;
         this.aggro = 0f;
-        this.currentHp = 5;
-        this.maxHp = 5;
+        this.hpBar = new ResourceBar(10);
+        this.spBar = new ResourceBar(5);
     }
 
     public String getName() {
@@ -31,16 +31,16 @@ public class Actor {
 
     public void attack(Actor target){
         int attackPwr = stats.vigor;
-        target.takeDmg(attackPwr);
+        target.takeDmg(attackPwr,DamageType.FIRE);
         this.aggro += attackPwr;
         if(this.aggro >= 100f)
             this.aggro = 100f;
         System.out.println(this.name + " attacked " + target.getName() + " for " + attackPwr +" damage ");
     }
 
-    public void takeDmg(float dmg){
-        currentHp -= dmg;
-        if(currentHp <= 0) {
+    public void takeDmg(float dmg, DamageType damageType){
+        hpBar.decreaseCurrent((int)dmg);
+        if(hpBar.getCurrent()  <= 0) {
             downed = true;
         }
     }
@@ -52,12 +52,12 @@ public class Actor {
         return stats;
     }
 
-    public int getCurrentHp() {
-        return currentHp;
+    public ResourceBar getHp() {
+        return hpBar;
     }
 
-    public int getMaxHp() {
-        return maxHp;
+    public ResourceBar getSp() {
+        return spBar;
     }
 
     public int initative(){
